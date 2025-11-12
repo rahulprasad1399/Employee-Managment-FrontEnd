@@ -1,0 +1,81 @@
+@if(!isFormOpen){
+<div class="p-8!">
+  <div class="flex align-center justify-between">
+    <h1 class="text-xl font-semibold mb-4!">Departments</h1>
+    <button
+      mat-flat-button
+      class="bg-green-400! hover:bg-green-600!"
+      (click)="isFormOpen = true"
+    >
+      Add
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <table class="table-auto border-collapse">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of departments; track item.id) {
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>
+          <div class="flex gap-4 justify-center">
+            <button mat-stroked-button (click)="editDepartment(item)">
+              Edit
+            </button>
+            <button
+              mat-flat-button
+              class="bg-red-400! hover:bg-red-600!"
+              (click)="deleteDepartment(item.id)"
+            >
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+} @else{
+<!-- FORM -->
+<div class="p-8!">
+  <div class="shadow-lg p-8! flex justify-center">
+    <form class="w-[360px] m-auto shadow-lg px-16! py-6!">
+      <h1 class="text-xl font-semibold mb-6!">Add Department</h1>
+      <mat-form-field class="w-full">
+        <mat-label>Name</mat-label>
+        <input matInput name="departmentName" [(ngModel)]="departmentName" />
+      </mat-form-field>
+      <div class="w-full flex justify-center">
+        @if(isEdit){
+        <button
+          type="button"
+          (click)="updateDepartment()"
+          mat-flat-button
+          class="bg-blue-400! hover:bg-blue-600!"
+        >
+          Edit
+        </button>
+        } @else {
+        <button
+          type="button"
+          (click)="addDepartment()"
+          mat-flat-button
+          class="bg-blue-400! hover:bg-blue-600!"
+        >
+          Add
+        </button>
+        }
+      </div>
+    </form>
+  </div>
+</div>
+}
