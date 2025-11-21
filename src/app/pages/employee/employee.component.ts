@@ -12,10 +12,11 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { EmployeeformcomponentComponent } from './employeeformcomponent/employeeformcomponent.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-employee',
-  imports: [TableComponent, MatButtonModule],
+  imports: [TableComponent, MatButtonModule, MatIconModule],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss',
 })
@@ -26,12 +27,15 @@ export class EmployeeComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   openDialog(): void {
-    this.dialog.open(EmployeeformcomponentComponent, {
-      panelClass : 'm-auto'
+    let ref = this.dialog.open(EmployeeformcomponentComponent, {
+      panelClass: 'm-auto',
+    });
+    ref.afterClosed().subscribe((result) => {
+      this.getAllEmployee();
     });
   }
 
-  ngOnInit() {
+  getAllEmployee() {
     this.httpService.getEmployee().subscribe({
       next: (res) => {
         this.employeeList = res;
@@ -40,11 +44,15 @@ export class EmployeeComponent implements OnInit {
     });
   }
 
+  ngOnInit() {
+    this.getAllEmployee();
+  }
+
   edit(employee: IEmployee) {}
 
   delete(employee: IEmployee) {}
 
   add() {
-    this.openDialog()
+    this.openDialog();
   }
 }

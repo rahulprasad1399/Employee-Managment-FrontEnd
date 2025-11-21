@@ -1,5 +1,5 @@
 <mat-card class="form-card p-10!">
-  <mat-card-title>Employee Form</mat-card-title>
+  <mat-card-title class="mb-4!">Employee Form</mat-card-title>
 
   <form
     [formGroup]="employeeForm"
@@ -21,79 +21,73 @@
       <input matInput formControlName="phone" />
     </mat-form-field>
 
+    <div class="flex items-center">
+      <label class="text-sm">Gender</label>
+      <mat-radio-group aria-label="Select an option" formControlName="gender">
+        <mat-radio-button [value]="gender.male">Male</mat-radio-button>
+        <mat-radio-button [value]="gender.female">Female</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
     <mat-form-field>
       <mat-label>Job Title</mat-label>
       <input matInput formControlName="jobTitle" />
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Gender</mat-label>
-      <mat-select formControlName="gender">
-        <mat-option value="Male">Male</mat-option>
-        <mat-option value="Female">Female</mat-option>
-        <mat-option value="Other">Other</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
       <mat-label>Department</mat-label>
       <mat-select formControlName="departmentId">
-        <mat-option *ngFor="let dep of departments" [value]="dep.id">
-          {{ dep.name }}
+        @for (item of department; track item.id) {
+        <mat-option [value]="item.id">
+          {{ item.name }}
         </mat-option>
+        }
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Joining Date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="joinPicker"
-        formControlName="joiningDate"
-      />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="joinPicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #joinPicker></mat-datepicker>
+    <mat-form-field class="w-full">
+      <mat-label>Date Of Birth</mat-label>
+      <input matInput [matDatepicker]="picker1" formControlName="dateOfBirth" />
+      <mat-datepicker-toggle matIconSuffix [for]="picker1">
+        <mat-icon matDatepickerToggleIcon>⮛</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="w-full">
       <mat-label>Last Working Date</mat-label>
       <input
         matInput
-        [matDatepicker]="lastPicker"
+        [matDatepicker]="picker2"
         formControlName="lastWorkingDate"
       />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="lastPicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #lastPicker></mat-datepicker>
+      <mat-datepicker-toggle matIconSuffix [for]="picker2">
+        <mat-icon matDatepickerToggleIcon>⮛</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Date of Birth</mat-label>
-      <input
-        matInput
-        [matDatepicker]="dobPicker"
-        formControlName="dateOfBirth"
-      />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="dobPicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #dobPicker></mat-datepicker>
+    <mat-form-field class="w-full">
+      <mat-label>Joining Date</mat-label>
+      <input matInput [matDatepicker]="picker3" formControlName="joiningDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="picker3">
+        <mat-icon matDatepickerToggleIcon>⮛</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker3></mat-datepicker>
     </mat-form-field>
 
     <div class="col-span-2 mt-4 flex justify-center">
       <button
         mat-raised-button
         class="bg-green-500! text-white! font-semibold cursor-pointer!"
-        [disabled]="employeeForm.invalid"
+        
+        [ngClass]="{
+          'bg-gray-200!': employeeForm.invalid,
+          'bg-green-500!': employeeForm.valid
+        }"
       >
         Save Employee
       </button>
-    </div>   
+    </div>
   </form>
 </mat-card>

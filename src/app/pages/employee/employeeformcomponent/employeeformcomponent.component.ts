@@ -5,8 +5,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { MatRadioModule } from '@angular/material/radio';
+import { NgClass } from '@angular/common';
+import { IDepartment } from '../../../types/department';
+import { HttpService } from '../../../services/http.service';
+import { Gender, IEmployee } from '../../../types/employee';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-employeeformcomponent',
@@ -18,30 +24,44 @@ import { MatCardModule } from '@angular/material/card';
     MatNativeDateModule,
     MatButtonModule,
     ReactiveFormsModule,
-    MatCardModule
+    MatCardModule,
+    MatRadioModule,
+    NgClass,
   ],
   templateUrl: './employeeformcomponent.component.html',
   styleUrl: './employeeformcomponent.component.scss',
 })
 export class EmployeeformcomponentComponent implements OnInit {
   fb = inject(FormBuilder);
-  employeeForm!: FormGroup;
+  http = inject(HttpService);
+  dialog = inject(MatDialogRef<EmployeeformcomponentComponent>);
+
+  gender = Gender;
+
+  department: IDepartment[] = [];
+
+  employeeForm = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', Validators.required],
+    jobTitle: ['', Validators.required],
+    gender: [1, Validators.required],
+    departmentId: [1, Validators.required],
+    joiningDate: ['', Validators.required],
+    lastWorkingDate: [''],
+    dateOfBirth: ['', Validators.required],
+  });
 
   ngOnInit() {
-    this.employeeForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      jobTitle: ['', Validators.required],
-      gender: [1, Validators.required],
-      departmentId: ['', Validators.required],
-      joiningDate: ['', Validators.required],
-      lastWorkingDate: [''],
-      dateOfBirth: ['', Validators.required],
+    this.http.getDepartments().subscribe((res) => {
+      this.department = res;
     });
   }
 
-  submit(){
-
+  submit() {
+    this.http.addEmployee(this.employeeForm.value as IEmployee).subscribe({
+      next: (res) => alert('Data Saved'),
+    });
+    this.dialog.close();
   }
 }
