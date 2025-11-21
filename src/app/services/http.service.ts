@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { IDepartment } from '../types/department';
+import { IEmployee } from '../types/employee';
 
 @Injectable({
   providedIn: 'root',
@@ -27,5 +28,9 @@ export class HttpService {
 
   editDepartment(id: number, name: string) {
     return this.http.put(`${this.apiUrl}/api/Department/${id}`, { name });
+  }
+
+  getEmployee(){
+    return this.http.get<IEmployee[]>(`${this.apiUrl}/api/Employee`)
   }
 }
