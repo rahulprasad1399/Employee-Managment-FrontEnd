@@ -9,7 +9,6 @@ import { environment } from '../../environments/environment.development';
 })
 export class HttpService {
   http = inject(HttpClient);
-  apiUrl = 'https://localhost:7092';
 
   constructor() {}
 
@@ -39,5 +38,13 @@ export class HttpService {
 
   addEmployee(employee: IEmployee) {
     return this.http.post(environment.apiUrl + '/api/Employee', employee);
+  }
+
+  getEmployeeById(id: number) {
+    return this.http.get(environment.apiUrl + '/api/Employee/' + id);
+  }
+
+  updateEmployeeById(id: number, employee: IEmployee) {
+    return this.http.put(environment.apiUrl + '/api/Employee/' + id, employee);
   }
 }

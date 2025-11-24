@@ -3,14 +3,7 @@ import { HttpService } from '../../services/http.service';
 import { TableComponent } from '../../component/table/table.component';
 import { IEmployee } from '../../types/employee';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { EmployeeformcomponentComponent } from './employeeformcomponent/employeeformcomponent.component';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -48,7 +41,17 @@ export class EmployeeComponent implements OnInit {
     this.getAllEmployee();
   }
 
-  edit(employee: IEmployee) {}
+  edit(employee: any) {
+    let ref = this.dialog.open(EmployeeformcomponentComponent, {
+      panelClass: 'm-auto',
+      data: {
+        employeeId: employee.id,
+      },
+    });
+    ref.afterClosed().subscribe((result) => {
+      this.getAllEmployee();
+    });
+  }
 
   delete(employee: IEmployee) {}
 

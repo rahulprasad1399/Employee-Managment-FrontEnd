@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,8 +11,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { NgClass } from '@angular/common';
 import { IDepartment } from '../../../types/department';
 import { HttpService } from '../../../services/http.service';
-import { Gender, IEmployee } from '../../../types/employee';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Gender } from '../../../types/employee';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-employeeformcomponent',
@@ -35,6 +35,9 @@ export class EmployeeformcomponentComponent implements OnInit {
   fb = inject(FormBuilder);
   http = inject(HttpService);
   dialog = inject(MatDialogRef<EmployeeformcomponentComponent>);
+  data = inject<{ employeeId?: number }>(MAT_DIALOG_DATA);
+
+  @Input() employeeId!: any;
 
   gender = Gender;
 
@@ -56,12 +59,53 @@ export class EmployeeformcomponentComponent implements OnInit {
     this.http.getDepartments().subscribe((res) => {
       this.department = res;
     });
+
+    const employeeId = this.data?.employeeId;
+
+    // EDIT
+    if (employeeId) {
+      this.http.getEmployeeById(employeeId).subscribe((res: any) => {
+        let result = {
+          ...res,
+          gender: res.gender === 'male' ? 1 : 0,
+        };
+        this.employeeForm.patchValue(result);
+      });
+    } else {
+    }
   }
 
   submit() {
-    this.http.addEmployee(this.employeeForm.value as IEmployee).subscribe({
-      next: (res) => alert('Data Saved'),
-    });
-    this.dialog.close();
+    const genderString =
+      this.employeeForm.value.gender === 1
+        ? 'male'
+        : this.employeeForm.value.gender === 2
+        ? 'female'
+        : null;
+
+    let payload: any = {
+      Name: this.employeeForm.value.name,
+      Email: this.employeeForm.value.email,
+      Phone: this.employeeForm.value.phone,
+      JobTitle: this.employeeForm.value.jobTitle,
+      Gender: genderString,
+      DepartmentId: this.employeeForm.value.departmentId,
+      JoiningDate: this.employeeForm.value.joiningDate,
+      DateOfBirth: this.employeeForm.value.dateOfBirth,
+      LastWorkingDate: this.employeeForm.value.lastWorkingDate || null,
+    };
+
+    if (this.data.employeeId) {
+      this.http
+        .updateEmployeeById(this.data.employeeId, payload)
+        .subscribe((res) => {
+          console.log('Data updated successfully');
+        });
+    } else {
+      this.http.addEmployee(payload).subscribe({
+        next: (res) => alert('Data Saved'),
+      });
+      this.dialog.close();
+    }
   }
 }

@@ -4,7 +4,7 @@ export interface IEmployee {
   Email: string;
   Phone: string;
   JobTitle: string;
-  Gender: number;
+  Gender: number | null;
   DepartmentId: number;
   JoiningDate: string;
   DateTime: string;
